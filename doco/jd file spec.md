@@ -5,7 +5,7 @@
 ## What's legal?
 
 ```
-000 Project //comment
+000 Project
 -----------       // Optional, semantically ignored.
 10-19 Area
    11 Category
@@ -20,15 +20,7 @@
 /* Comments like this
    also allowed */
 
-/* But of course anything at all
-      10-19 Area
-   inside the comment, is a comment.
-   The error case here would be if a multi-line comment was never terminated.
-*/
-
 ---               // Markdown-style dividers allowed.
-                  // Actually anything that starts with a `-` is counted as a 'divider'
-                  //   and is ignored. The whole line. So you could use this as a comment.
 
 002 Project
 10-19 Area
@@ -60,10 +52,6 @@
 000 Project       // Out of order [5].
 -----------
 10-19 Area
-   11             // Everything must have a title [7].
-
-000 Project
-   11 Category    // You can't skip a thing, in this case the Area def.
 
 ---
 
@@ -76,7 +64,6 @@
 [3]: Categories must follow the correct Area.
 [4]: IDs must follow the correct Category.
 [6]: The file must either start with a Project, or contain only one ACID.
-[7]: You may not create a number without a title.
 ```
 
 ---

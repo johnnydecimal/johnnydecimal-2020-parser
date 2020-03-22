@@ -82,3 +82,14 @@ test('returns error on nonsense', () => {
   expect(jdDetector('10.01not an id').jdType).toBe('error');
   expect(jdDetector('----not a divider').jdType).toBe('error');
 });
+
+test('items must have a title', () => {
+  expect(jdDetector('100').jdType).toBe('error');
+  expect(jdDetector('100     ').jdType).toBe('error');
+  expect(jdDetector('10-19').jdType).toBe('error');
+  expect(jdDetector('10-19   ').jdType).toBe('error');
+  expect(jdDetector('10').jdType).toBe('error');
+  expect(jdDetector('10      ').jdType).toBe('error');
+  expect(jdDetector('12.34').jdType).toBe('error');
+  expect(jdDetector('12.34   ').jdType).toBe('error');
+});

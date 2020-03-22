@@ -28,37 +28,44 @@ type ReturnValue = {
   jdType: 'project' | 'error';
   jdNumber: string | null;
   jdTitle: string | null;
+  comment: string | null;
 };
 
 const jdDetector = (input: string): ReturnValue => {
-  // Set up our return variables
-  let jdType: 'project' | 'area' | 'category' | 'id' | 'separator' | 'comment';
-  let jdNumber: string;
-  let jdTitle: string;
+  console.info(`jdDetector() triggered with input: ${input}`);
+
+  // Set up our return value
+  const returnValue = {} as ReturnValue;
 
   // .exec returns:
   // ([0?] Any leading spaces), [0] full, [1] number, [2] space, [3] title, [4] comments
   // Don't forget you can check the .length of the array to get a sneaky look.
 
-  // Are we a Project? ('100 My great project')
-  const processedInput = /^( *)(\d\d\d)( )(.*)( \/\/.*)/.exec(input);
-  if (processedInput) {
-    jdType = 'project';
+  // -- Strip leading spaces -------------------------------------------------
+  input = input.trim();
 
-    // If processedInput[1] is full of spaces, they're leading. Ditch them.
-    if (processedInput[1].match(/ */)) {
-      processedInput.splice(1, 1);
-    }
-
-    console.log(processedInput);
+  // -- Look for a comment and pop it out if it exists -----------------------
+  if (input.split('//').length === 2) {
+    returnValue.comment = input.split('//')[1].trim();
+    // Remove the comment from the input
+    input = input.split('//')[0].trim();
   }
 
+  /* -- Check for a Project ('100 My great project') -------------------------
+        (\d\d\d)    = 3 digits at the start of the string
+        ( *)        = Any number of spaces
+        (.*)        = Any text (the title), including all trailing spaces
+        ( *\/\/.*)? = Optionally, a comment like // this comment
+   */
+  const processedInput = /(\d\d\d)( *)(.*?)( *\/\/.*)?/.exec(input);
+
+  /*
   // Check for Area
   if (/(\d\d-\d\d)( )(.*)( \/\/.*)/.exec(input)) {
     return { jdType: 'project' };
   }
-
-  return { jdType: 'error' };
+  */
+  return { jdType: 'error', jdNumber: null, jdTitle: null, comment: null };
 };
 
 export default jdDetector;

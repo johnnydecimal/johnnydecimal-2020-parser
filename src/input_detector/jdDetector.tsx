@@ -45,16 +45,16 @@ const jdDetector = (input: string): ReturnValue => {
   }
 
   // -- Check for a Project ('100 My great project') -------------------------
-  isProject = /(\d\d\d)( *)(.*)/.exec(input);
+  isProject = /^(\d\d\d )( *)(.*)/.exec(input);
   if (isProject) {
     returnValue.jdType = 'project';
-    returnValue.jdNumber = isProject[1];
+    returnValue.jdNumber = isProject[1].trim();
     returnValue.jdTitle = isProject[3].trim();
     return returnValue;
   }
 
   // -- Check for an Area ('10-19 My special area') --------------------------
-  isArea = /(\d\d-\d\d)( *)(.*)/.exec(input);
+  isArea = /^(\d\d-\d\d )( *)(.*)/.exec(input);
   if (isArea) {
     // -- Check if the Area number is formatted correctly --------------------
     const areaFormatCheck = isArea[1].split('-');
@@ -65,10 +65,28 @@ const jdDetector = (input: string): ReturnValue => {
       Number(areaFormatCheck[1]) - Number(areaFormatCheck[0]) === 9
     ) {
       returnValue.jdType = 'area';
-      returnValue.jdNumber = isArea[1];
+      returnValue.jdNumber = isArea[1].trim();
       returnValue.jdTitle = isArea[3].trim();
       return returnValue;
     }
+  }
+
+  // -- Check for a Category ('10 My cool category') -------------------------
+  isCategory = /^(\d\d )( *)(.*)/.exec(input);
+  if (isCategory) {
+    returnValue.jdType = 'category';
+    returnValue.jdNumber = isCategory[1].trim();
+    returnValue.jdTitle = isCategory[3].trim();
+    return returnValue;
+  }
+
+  // -- Check for an ID ('12.34 My interesting ID') --------------------------
+  isID = /^(\d\d\.\d\d )( *)(.*)/.exec(input);
+  if (isID) {
+    returnValue.jdType = 'id';
+    returnValue.jdNumber = isID[1].trim();
+    returnValue.jdTitle = isID[3].trim();
+    return returnValue;
   }
 
   return { jdType: 'error', jdNumber: null, jdTitle: null, comment: null };

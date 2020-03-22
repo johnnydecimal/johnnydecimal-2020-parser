@@ -97,6 +97,7 @@ const DecimalMachine = () => {
 
   // Start the service
   promiseService.start();
+  /*
 
   promiseService.send('FIND_PROJECT');
   promiseService.send('FIND_CATEGORY');
@@ -104,6 +105,7 @@ const DecimalMachine = () => {
   promiseService.send('FIND_ID');
   promiseService.send('FIND_ID');
   promiseService.send('OTHER');
+  */
 
   return <div>Didn't do much but console.log, to be honest.</div>;
 };

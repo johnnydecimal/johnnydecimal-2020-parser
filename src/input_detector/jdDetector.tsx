@@ -25,7 +25,7 @@
  */
 
 type ReturnValue = {
-  jdType: 'project' | 'area' | 'category' | 'id' | 'error';
+  jdType: 'project' | 'area' | 'category' | 'id' | 'divider' | 'error';
   jdNumber: string | null;
   jdTitle: string | null;
   comment: string | null;
@@ -33,7 +33,7 @@ type ReturnValue = {
 
 const jdDetector = (input: string): ReturnValue => {
   const returnValue = {} as ReturnValue;
-  let isProject, isArea, isCategory, isID: any;
+  let isProject, isArea, isCategory, isID, isDivider: any;
 
   input = input.trim();
 
@@ -89,6 +89,14 @@ const jdDetector = (input: string): ReturnValue => {
     return returnValue;
   }
 
+  // -- Check for a divider line ('----', any number of) ---------------------
+  isDivider = /^-+$/.exec(input);
+  if (isDivider) {
+    returnValue.jdType = 'divider';
+    return returnValue;
+  }
+
+  // -- Nothing found --------------------------------------------------------
   return { jdType: 'error', jdNumber: null, jdTitle: null, comment: null };
 };
 

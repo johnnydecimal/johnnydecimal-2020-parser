@@ -63,13 +63,22 @@ test('detects a correct ID', () => {
   );
 });
 
+test('detects a correct divider', () => {
+  expect(jdDetector('-').jdType).toBe('divider');
+  expect(jdDetector('--------------').jdType).toBe('divider');
+});
+
 test('returns error on nonsense', () => {
   expect(jdDetector('10a not a project').jdType).toBe('error');
   expect(jdDetector('10-99 not an area').jdType).toBe('error');
   expect(jdDetector('10-29 not an area').jdType).toBe('error');
   expect(jdDetector('1x-19 not an area').jdType).toBe('error');
+  expect(jdDetector('1x not a category').jdType).toBe('error');
+  expect(jdDetector('1x.19 not an id').jdType).toBe('error');
   // There must be a space after the number
   expect(jdDetector('100not a project').jdType).toBe('error');
   expect(jdDetector('10-19not an area').jdType).toBe('error');
   expect(jdDetector('10not a category').jdType).toBe('error');
+  expect(jdDetector('10.01not an id').jdType).toBe('error');
+  expect(jdDetector('----not a divider').jdType).toBe('error');
 });

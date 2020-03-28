@@ -1,16 +1,15 @@
 import React from 'react';
-import { Button, Container } from 'semantic-ui-react';
+import { Container, Header } from 'semantic-ui-react';
 
-import DecimalMachine from './xstate/machine';
-import jdDetector from './input_detector/jdDetector';
+import TextAreaInput from './textAreaInput/textAreaInput';
 
 import 'semantic-ui-css/semantic.min.css';
 
 const App = () => {
   return (
     <Container style={{ marginTop: '50px' }}>
-      <Button>I'm a button!</Button>
-      <DecimalMachine />
+      <Header as="h1">Johnny.Decimal</Header>
+      <TextAreaInput />
     </Container>
   );
 };

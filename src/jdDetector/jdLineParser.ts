@@ -1,41 +1,22 @@
-/* Define the type of our return value.
+import JDLineObject from '../types/JDLineObject';
+
+/**
+ * jdLineParser takes one line and parses it to see if it is a JD item.
+ * If it is, an object containing the item is returned.
+ * If it is not, an object with { jdType: 'error' } is returned.
  *
- * It looks like this:
- * {
- *   jdType:   'area'
- *   jdNumber: '10-19'
- *   jdTitle:  'My great area'
- * }
- *
- * Think about the purpose of this function. You feed it <anything> and it tells you
- * whether that thing is a PRO.AC.ID *or* whether it's none of those things and is not
- * a valid input.
- *
- * Or it could tell you that the thing is a comment. Or a blank line. Or a header row.
- *
- * Either way, it is *not* the job of this function to tell you whether this is the
- * right place to be finding that thing. Not at all. That's the state machine, which
- * will be given the output from this function.
- *
+ * @param {string} input A single-line string to analyse.
+ * @returns {object} An object of type ReturnValue.
  */
-
-/* How to build this thing.
- *
- * A TDD-ish approach? Define a type, build the test for that type, repeat.
- */
-
-type ReturnValue = {
-  jdType: 'project' | 'area' | 'category' | 'id' | 'divider' | 'error';
-  jdNumber: string | null;
-  jdTitle: string | null;
-  comment: string | null;
-};
-
-const jdDetector = (input: string): ReturnValue => {
-  const returnValue = {} as ReturnValue;
+const jdLineParser = (input: string): JDLineObject => {
+  const returnValue = {} as JDLineObject;
   let isProject, isArea, isCategory, isID, isDivider: any;
 
   input = input.trim();
+  // -- Check for multi-line input and fail if so ----------------------------
+  if (input.split('\n').length > 1) {
+    return { jdType: 'error', error: 'Multi-line input not allowed.' };
+  }
 
   // -- Look for a comment and pop it out if it exists -----------------------
   if (input.split('//').length === 2) {
@@ -97,7 +78,7 @@ const jdDetector = (input: string): ReturnValue => {
   }
 
   // -- Nothing found --------------------------------------------------------
-  return { jdType: 'error', jdNumber: null, jdTitle: null, comment: null };
+  return { jdType: 'error', error: 'Nothing matched.' };
 };
 
-export default jdDetector;
+export default jdLineParser;

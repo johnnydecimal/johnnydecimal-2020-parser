@@ -5,7 +5,7 @@
 ## What's legal?
 
 ```
-000 Project //comment
+000 Project
 -----------       // Optional, semantically ignored.
 10-19 Area
    11 Category
@@ -17,8 +17,8 @@
    21 Category
    21.01 ID
 
-/* Comments like this
-   also allowed */
+/* Multi-line comments like this are also allowed.
+   But obviously not after JD items, just on their own. */
 
 /* But of course anything at all
       10-19 Area
@@ -26,21 +26,23 @@
    The error case here would be if a multi-line comment was never terminated.
 */
 
----               // Markdown-style dividers allowed.
-                  // Actually anything that starts with a `-` is counted as a 'divider'
-                  //   and is ignored. The whole line. So you could use this as a comment.
+---               // Markdown-style dividers allowed anywhere, as long as
+                  // they're the only thing on a line.
 
 002 Project
 10-19 Area
-                  // Don't need to define any Categories etc. underneath if you don't want to.
+                  // You don't need to define any Categories etc. underneath
+                  // if you don't want to.
                   // Any number of blank lines are fine.
 30-39 Area
    33 Category
-   33.28 ID       // Nothing needs to start from the start, as long as it's in order.
+   33.28 ID       // Nothing needs to start from the start, as long as it's
+                  // in order. Skip as many numbers as you like.
 
 40-49 Area
  46 Category      // Indentation is optional. Whitespace is ignored.
-46.84 ID          // But prettier will do it for you on processing, unless you specify otherwise.
+46.84 ID          // But prettier will do it for you on processing, unless
+                  // you specify otherwise.
 ```
 
 ## What's illegal?

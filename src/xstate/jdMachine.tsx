@@ -4,9 +4,6 @@ const jdMachine = Machine({
   id: 'jdLanguage',
   initial: 'start',
   strict: true,
-  context: {
-    johnny: 'test',
-  },
   states: {
     start: {
       on: {
@@ -15,6 +12,7 @@ const jdMachine = Machine({
         ID: 'error',
         COMMENT: 'start',
         DIVIDER: 'start',
+        EMPTYLINE: 'start',
         EOF: 'eof',
         ERROR: 'error',
       },
@@ -27,6 +25,7 @@ const jdMachine = Machine({
         ID: 'error',
         COMMENT: 'area_detected',
         DIVIDER: 'area_detected',
+        EMPTYLINE: 'area_detected',
         EOF: 'eof',
         ERROR: 'error',
       },
@@ -39,11 +38,9 @@ const jdMachine = Machine({
         ID: 'id_detected',
         COMMENT: 'category_detected',
         DIVIDER: 'category_detected',
+        EMPTYLINE: 'category_detected',
         EOF: 'eof',
         ERROR: 'error',
-      },
-      meta: {
-        name: 'category',
       },
     },
 
@@ -54,11 +51,9 @@ const jdMachine = Machine({
         ID: 'id_detected',
         COMMENT: 'id_detected',
         DIVIDER: 'id_detected',
+        EMPTYLINE: 'id_detected',
         EOF: 'eof',
         ERROR: 'error',
-      },
-      meta: {
-        name: 'id',
       },
     },
 

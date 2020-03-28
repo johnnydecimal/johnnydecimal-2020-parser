@@ -14,3 +14,12 @@ test('accepts a blank input', () => {
   expect(jdMachineProcessor('').status).toBe('success');
   expect(jdMachineProcessor('').jdArray.length).toBe(0);
 });
+
+test('strips blank lines', () => {
+  expect(
+    jdMachineProcessor(`10-19 Good area
+  
+  
+  11 Category`).jdArray.length
+  ).toBe(2);
+});

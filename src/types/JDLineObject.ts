@@ -9,6 +9,7 @@ type JDLineObject = {
     | 'id'
     | 'divider'
     | 'comment'
+    | 'emptyline'
     | 'error';
   jdNumber?: string;
   jdTitle?: string;

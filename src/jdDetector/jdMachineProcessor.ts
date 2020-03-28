@@ -13,6 +13,8 @@ import JDMachineProcessorOutput from '../types/jDMachineProcessorOutput';
  * { status: 'success', jdArray: [...] } is returned. If not, an object with
  * { status: 'failure' } is returned.
  *
+ * Blank lines in the original input are removed by this function.
+ *
  * @param {string} input A string, 1+ lines long, of (potentially)
  *                       JD-formatted text to analyse.
  * @returns {object} An object of type JDMachineProcessorOutput.
@@ -43,11 +45,17 @@ const jdMachineProcessor = (input: string): JDMachineProcessorOutput => {
     }
   }
 
+  // We're done. Return either success or error.
   if (jdMachineService.state.value !== 'error') {
     jdMachineService.stop();
+    // detectedArray might contain a bunch of blank lines here. Strip them.
+    // TODO perhaps think about making this an option?
+    const finalArray = detectedArray.filter(
+      item => item.jdType !== 'emptyline'
+    );
     return {
       status: 'success',
-      jdArray: detectedArray,
+      jdArray: finalArray,
     };
   } else {
     jdMachineService.stop();

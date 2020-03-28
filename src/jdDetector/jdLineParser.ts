@@ -18,6 +18,12 @@ const jdLineParser = (input: string): JDLineObject => {
     return { jdType: 'error', error: 'Multi-line input not allowed.' };
   }
 
+  // -- The line could be empty ----------------------------------------------
+  if (input === '') {
+    returnValue.jdType = 'emptyline';
+    return returnValue;
+  }
+
   // -- Look for a comment and pop it out if it exists -----------------------
   if (input.split('//').length === 2) {
     returnValue.comment = input.split('//')[1].trim();

@@ -23,6 +23,11 @@ const jdLineParser = (input: string): JDLineObject => {
     returnValue.comment = input.split('//')[1].trim();
     // Remove the comment from the input
     input = input.split('//')[0].trim();
+    // If the entire line was a comment, that's cool. Act accordingly.
+    if (input === '') {
+      returnValue.jdType = 'comment';
+      return returnValue;
+    }
   }
 
   // -- Check for a Project ('100 My great project') -------------------------
@@ -74,6 +79,7 @@ const jdLineParser = (input: string): JDLineObject => {
   isDivider = /^-+$/.exec(input);
   if (isDivider) {
     returnValue.jdType = 'divider';
+    returnValue.comment = input;
     return returnValue;
   }
 

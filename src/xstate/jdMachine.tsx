@@ -30,10 +30,6 @@ const jdMachine = Machine({
         EOF: 'eof',
         ERROR: 'error',
       },
-      meta: {
-        name: 'area',
-        otherValue: 'any old nonsense',
-      },
     },
 
     category_detected: {

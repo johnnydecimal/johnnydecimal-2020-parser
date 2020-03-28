@@ -54,6 +54,15 @@ test('detects a correct ID', () => {
 test('detects a correct divider', () => {
   expect(jdLineParser('-').jdType).toBe('divider');
   expect(jdLineParser('--------------').jdType).toBe('divider');
+  expect(jdLineParser('--------------').comment).toBe('--------------');
+});
+
+test('detects a correct one-line // comment', () => {
+  expect(jdLineParser('// This is fine').jdType).toBe('comment');
+  expect(jdLineParser('// 10-19 This is still a comment').jdType).toBe(
+    'comment'
+  );
+  expect(jdLineParser('//').jdType).toBe('comment');
 });
 
 test('returns error on nonsense', () => {

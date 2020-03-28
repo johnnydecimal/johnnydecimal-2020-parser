@@ -24,17 +24,20 @@ const jdMachineProcessor = (input: string): JDMachineProcessorOutput => {
   let errorLine: Number | undefined;
 
   detectedArray = jdFileParser(input);
-  // TODO Test here that the array actually exists.
 
   // Start the machine.
   const jdMachineService = interpret(jdMachine).start();
 
   // Run the array of objects through the machine.
   for (let i = 0; i < detectedArray.length; i++) {
-    jdMachineService.send(detectedArray[i].jdType.toUpperCase());
+    const transition = detectedArray[i].jdType.toUpperCase();
+    jdMachineService.send(transition);
 
     // If the state is now error, we capture which row it happened on.
     if (jdMachineService.state.value === 'error') {
+      const previousState = jdMachineService.state.history?.value;
+      error = `Everything was going really well at line ${i}, where we were in a state of '${previousState}'. Then line ${i +
+        1} put the machine in an error state by causing the transition '${transition}' to be sent.`;
       errorLine = i + 1;
       break;
     }

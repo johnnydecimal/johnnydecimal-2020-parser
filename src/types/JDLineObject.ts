@@ -2,7 +2,14 @@
  * JDLineObject is the type returned by jdLineParser.
  */
 type JDLineObject = {
-  jdType: 'project' | 'area' | 'category' | 'id' | 'divider' | 'error';
+  jdType:
+    | 'project'
+    | 'area'
+    | 'category'
+    | 'id'
+    | 'divider'
+    | 'comment'
+    | 'error';
   jdNumber?: string;
   jdTitle?: string;
   comment?: string; // Any inline comments like this one

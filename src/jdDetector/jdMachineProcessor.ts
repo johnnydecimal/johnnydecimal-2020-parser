@@ -30,8 +30,6 @@ const jdMachineProcessor = (input: string): JDMachineProcessorOutput => {
   // Start the machine.
   const jdMachineService = interpret(jdMachine).start();
 
-  // debugger;
-
   // Run the array of objects through the machine.
   for (let i = 0; i < detectedArray.length; i++) {
     // XState expects a 'type' property. Might as well match it. This is

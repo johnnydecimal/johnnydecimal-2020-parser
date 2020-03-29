@@ -1,5 +1,9 @@
 import { Machine, assign } from 'xstate';
 
+import isAreaOrderValid from '../jdHelpers/isAreaOrderValid';
+import isCategoryOrderValid from '../jdHelpers/isCategoryOrderValid';
+import isCategoryInArea from '../jdHelpers/isCategoryInArea';
+
 // Context
 const updateAreaContext = assign({
   area: (context, event) => event.jdNumber,
@@ -13,15 +17,14 @@ const updateIDContext = assign({
 
 // Guards
 const areaValid = (context, event) => {
-  // This fires whenever we trigger 'AREA'.
-  // We need to check that the *new* area number is greater, numerically,
-  // than the *current* area number (if it exists).
-  // We assume that the area numbers are all correctly formatted as that is
-  // handled elsewhere.
-  const currentAreaNumber = Number(context.area.charAt(0)) || -1;
-  const newAreaNumber = Number(event.jdNumber?.charAt(0));
-  console.log(`current then new: ${currentAreaNumber} ${newAreaNumber}`);
-  return newAreaNumber > currentAreaNumber;
+  return isAreaOrderValid(context.area, event.jdNumber);
+};
+
+const categoryValid = (context, event) => {
+  return (
+    isCategoryInArea(context.area, event.jdNumber) &&
+    isCategoryOrderValid(context.category, event.jdNumber)
+  );
 };
 
 const jdMachine = Machine(
@@ -81,10 +84,14 @@ const jdMachine = Machine(
             target: 'area_detected',
             actions: 'updateAreaContext',
           },
-          CATEGORY: {
-            target: 'category_detected',
-            actions: 'updateCategoryContext',
-          },
+          CATEGORY: [
+            {
+              target: 'category_detected',
+              actions: 'updateCategoryContext',
+              cond: 'categoryValid',
+            },
+            { target: 'error' },
+          ],
           ID: {
             target: 'id_detected',
             actions: 'updateIDContext',
@@ -130,7 +137,7 @@ const jdMachine = Machine(
   },
   {
     actions: { updateAreaContext, updateCategoryContext, updateIDContext },
-    guards: { areaValid },
+    guards: { areaValid, categoryValid },
   }
 );
 

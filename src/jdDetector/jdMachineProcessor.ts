@@ -30,16 +30,24 @@ const jdMachineProcessor = (input: string): JDMachineProcessorOutput => {
   // Start the machine.
   const jdMachineService = interpret(jdMachine).start();
 
+  // debugger;
+
   // Run the array of objects through the machine.
   for (let i = 0; i < detectedArray.length; i++) {
-    const transition = detectedArray[i].jdType.toUpperCase();
-    jdMachineService.send(transition);
+    // XState expects a 'type' property. Might as well match it. This is
+    // the transition.
+    const type = detectedArray[i].jdType.toUpperCase();
+
+    jdMachineService.send({
+      type, // 'AREA', 'CATEGORY', etc.
+      ...detectedArray[i], // Also pass jdNumber, jdTitle for state context.
+    });
 
     // If the state is now error, we capture which row it happened on.
     if (jdMachineService.state.value === 'error') {
       const previousState = jdMachineService.state.history?.value;
       error = `Everything was going really well at line ${i}, where we were in a state of '${previousState}'. Then line ${i +
-        1} put the machine in an error state by causing the transition '${transition}' to be sent.`;
+        1} put the machine in an error state by causing the transition '${type}' to be sent.`;
       errorLine = i + 1;
       break;
     }

@@ -18,7 +18,7 @@ const updateIDContext = assign({
 });
 
 // Guards
-const isAreaOrderValidGuard = (context, event, guardMeta) => {
+const guardAreaOrderValid = (context, event, guardMeta) => {
   if (isAreaOrderValid(context.area, event.jdNumber)) {
     return true;
   } else {
@@ -29,7 +29,6 @@ const isAreaOrderValidGuard = (context, event, guardMeta) => {
 };
 
 const isCategoryOrderValidGuard = (context, event, guardMeta) => {
-  console.log(guardMeta.state.value);
   if (
     isCategoryInArea(context.area, event.jdNumber) &&
     isCategoryOrderValid(context.category, event.jdNumber)
@@ -89,7 +88,7 @@ const jdMachine = Machine(
             {
               target: 'area_detected',
               actions: 'updateAreaContext',
-              cond: { type: 'areaValid', calledFrom: 'area_detected' },
+              cond: 'guardAreaOrderValid',
             },
             { target: 'error' },
           ],
@@ -116,7 +115,7 @@ const jdMachine = Machine(
             {
               target: 'area_detected',
               actions: 'updateAreaContext',
-              cond: { type: 'areaValid', calledFrom: 'category_detected' },
+              cond: 'guardAreaOrderValid',
             },
             { target: 'error' },
           ],
@@ -150,7 +149,7 @@ const jdMachine = Machine(
             {
               target: 'area_detected',
               actions: 'updateAreaContext',
-              cond: { type: 'areaValid', calledFrom: 'id_detected' },
+              cond: 'guardAreaOrderValid',
             },
             { target: 'error' },
           ],
@@ -190,7 +189,7 @@ const jdMachine = Machine(
   {
     actions: { updateAreaContext, updateCategoryContext, updateIDContext },
     guards: {
-      areaValid: isAreaOrderValidGuard,
+      guardAreaOrderValid,
       categoryValid: isCategoryOrderValidGuard,
       idValid,
     },

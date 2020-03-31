@@ -28,6 +28,8 @@ const guardAreaOrderValid = (context, event, guardMeta) => {
   }
 };
 
+// Next up, Johnny: split this out to two guards so you can know exactly
+// what failed and set context.error accordingly.
 const isCategoryOrderValidGuard = (context, event, guardMeta) => {
   if (
     isCategoryInArea(context.area, event.jdNumber) &&

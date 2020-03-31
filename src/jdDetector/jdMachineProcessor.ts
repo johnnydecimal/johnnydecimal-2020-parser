@@ -11,7 +11,7 @@ import JDMachineProcessorOutput from '../types/jDMachineProcessorOutput';
  * jdMachineProcessor takes a multi-line string and, using various helper
  * functions, determines whether it is valid JD. If so, an object with
  * { status: 'success', jdArray: [...] } is returned. If not, an object with
- * { status: 'failure' } is returned.
+ * { status: 'error' } is returned.
  *
  * Blank lines in the original input are removed by this function.
  *
@@ -65,7 +65,7 @@ const jdMachineProcessor = (input: string): JDMachineProcessorOutput => {
     };
   } else {
     jdMachineService.stop();
-    return { status: 'failure', error, errorLine };
+    return { status: 'error', error, errorLine };
   }
 };
 

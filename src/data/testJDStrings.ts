@@ -14,9 +14,63 @@ const validTestJDString: string = `10-19     My special area
    22     Spiffy
    22.22  Aha`;
 
-// Test for JDE12.12, an area which immediately follows another area has an
+// Test for JDE12.12: An area which immediately follows another area has an
 // area number lower than the preceding area.
-const jde12_12 = `20-29 area
+const jderr12_12 = `20-29 area
 10-19 error`;
 
-export { validTestJDString, jde12_12 };
+// Test for JDE12.13: An area which follows a category has an area number
+// lower than the preceding area.
+const jderr12_13 = `20-29 area
+21 category
+10-19 error`;
+
+// Test for JDE12.14: An area which follows an ID has an area number lower
+// than the preceding area.
+const jderr12_14 = `20-29 area
+21 category
+21.01 id
+10-19 error`;
+
+// Test for JDE13.13: A category which immediately follows another category
+// has a category number lower than the preceding category.
+const jderr13_13 = `20-29 area
+22 category
+21 error`;
+
+// Test for JDE13.14: A category which follows an ID has a category number
+// lower than the preceding category.
+const jderr13_14 = `20-29 area
+22 category
+22.01 id
+21 error`;
+
+// Test for JDE14.14: An ID which follows an ID has an ID lower than the
+// preceding ID.
+const jderr14_14 = `20-29 area
+22 category
+22.02 id
+22.01 error`;
+
+// Test for JDE23.22: A category does not belong to its parent area.
+const jderr23_22 = `20-29 area
+02 category
+`;
+
+// Test for JDE24.23: An ID does not belong to its parent category.
+const jderr24_23 = `20-29 area
+22 category
+02.01 id
+`;
+
+export {
+  validTestJDString,
+  jderr12_12,
+  jderr12_13,
+  jderr12_14,
+  jderr13_13,
+  jderr13_14,
+  jderr14_14,
+  jderr23_22,
+  jderr24_23,
+};

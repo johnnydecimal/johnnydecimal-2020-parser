@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { Button, Form, TextArea } from 'semantic-ui-react';
 
 import jdMachineProcessor from '../jdDetector/jdMachineProcessor';
-import testJDString from '../data/testJDString';
+import { validTestJDString } from '../data/testJDStrings';
 
 const TextAreaInput = () => {
-  const [formValue, updateForm] = useState(testJDString);
+  const [formValue, updateForm] = useState(validTestJDString);
 
   const formOnChange = (e: any) => {
     updateForm(e.target.value);

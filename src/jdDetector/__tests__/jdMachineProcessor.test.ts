@@ -1,12 +1,14 @@
 import jdMachineProcessor from '../jdMachineProcessor';
-import testJDString from '../../data/testJDString';
+import { validTestJDString, jde12_12 } from '../../data/testJDStrings';
 
 // TODO See if there's a better way than forcing with the bang these tests
 //      not to throw TS2532.
 test('detects a correct file', () => {
-  expect(jdMachineProcessor(testJDString).status).toBe('success');
-  expect(jdMachineProcessor(testJDString).jdArray![1].jdType).toBe('category');
-  expect(jdMachineProcessor(testJDString).jdArray![5].comment).toBe(
+  expect(jdMachineProcessor(validTestJDString).status).toBe('success');
+  expect(jdMachineProcessor(validTestJDString).jdArray![1].jdType).toBe(
+    'category'
+  );
+  expect(jdMachineProcessor(validTestJDString).jdArray![5].comment).toBe(
     'which has a comment'
   );
 });
@@ -26,18 +28,7 @@ test('strips blank lines', () => {
   ).toBe(2);
 });
 
-// TODO these tests are weak.
-// "The leads are weak!"
-test('fails if area order is incorrect', () => {
-  expect(
-    jdMachineProcessor(`10-19 first
-  20-29 second
-  00-09 third`).status
-  ).toBe('failure');
-
-  expect(
-    jdMachineProcessor(`10-19 area
-  12 category
-  11 category`).status
-  ).toBe('failure');
+// -- Proper tests against errors --------------------------------------------
+test('jde12.12', () => {
+  expect(jdMachineProcessor(jde12_12).status).toBe('failure');
 });

@@ -2,7 +2,9 @@ import { Machine, assign } from 'xstate';
 
 import isAreaOrderValid from '../jdHelpers/isAreaOrderValid';
 import isCategoryOrderValid from '../jdHelpers/isCategoryOrderValid';
+import isIDOrderValid from '../jdHelpers/isIDOrderValid';
 import isCategoryInArea from '../jdHelpers/isCategoryInArea';
+import isIDInCategory from '../jdHelpers/isIDInCategory';
 
 // Context
 const updateAreaContext = assign({
@@ -27,6 +29,13 @@ const categoryValid = (context, event) => {
   );
 };
 
+const idValid = (context, event) => {
+  return (
+    isIDInCategory(context.category, event.jdNumber) &&
+    isIDOrderValid(context.id, event.jdNumber)
+  );
+};
+
 const jdMachine = Machine(
   {
     id: 'jdLanguage',
@@ -43,7 +52,6 @@ const jdMachine = Machine(
           AREA: {
             target: 'area_detected',
             actions: 'updateAreaContext',
-            // cond: 'areaValid', no need to check if it's the first area?
           },
           CATEGORY: 'error',
           ID: 'error',
@@ -65,10 +73,14 @@ const jdMachine = Machine(
             },
             { target: 'error' },
           ],
-          CATEGORY: {
-            target: 'category_detected',
-            actions: 'updateCategoryContext',
-          },
+          CATEGORY: [
+            {
+              target: 'category_detected',
+              actions: 'updateCategoryContext',
+              cond: 'categoryValid',
+            },
+            { target: 'error' },
+          ],
           ID: 'error',
           COMMENT: 'area_detected',
           DIVIDER: 'area_detected',
@@ -106,18 +118,30 @@ const jdMachine = Machine(
 
       id_detected: {
         on: {
-          AREA: {
-            target: 'area_detected',
-            actions: 'updateAreaContext',
-          },
-          CATEGORY: {
-            target: 'category_detected',
-            actions: 'updateCategoryContext',
-          },
-          ID: {
-            target: 'id_detected',
-            actions: 'updateIDContext',
-          },
+          AREA: [
+            {
+              target: 'area_detected',
+              actions: 'updateAreaContext',
+              cond: 'areaValid',
+            },
+            { target: 'error' },
+          ],
+          CATEGORY: [
+            {
+              target: 'category_detected',
+              actions: 'updateCategoryContext',
+              cond: 'categoryValid',
+            },
+            { target: 'error' },
+          ],
+          ID: [
+            {
+              target: 'id_detected',
+              actions: 'updateIDContext',
+              cond: 'idValid',
+            },
+            { target: 'error' },
+          ],
           COMMENT: 'id_detected',
           DIVIDER: 'id_detected',
           EMPTYLINE: 'id_detected',
@@ -137,7 +161,7 @@ const jdMachine = Machine(
   },
   {
     actions: { updateAreaContext, updateCategoryContext, updateIDContext },
-    guards: { areaValid, categoryValid },
+    guards: { areaValid, categoryValid, idValid },
   }
 );
 

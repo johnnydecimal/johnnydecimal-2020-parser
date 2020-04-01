@@ -42,10 +42,9 @@ const jdMachineProcessor = (input: string): JDMachineProcessorOutput => {
     });
 
     // If the state is now error, we capture which row it happened on.
+    // TODO Fix the !TypeScript override
     if (jdMachineService.state.value === 'error') {
-      const previousState = jdMachineService.state.history?.value;
-      error = `Everything was going really well at line ${i}, where we were in a state of '${previousState}'. Then line ${i +
-        1} put the machine in an error state by causing the transition '${type}' to be sent.`;
+      error = jdMachineService.state.context!.error;
       errorLine = i + 1;
       break;
     }

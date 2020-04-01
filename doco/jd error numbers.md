@@ -5,6 +5,13 @@ Holy shit this system is self-descriptive. :-)
 
 // TODO Build indenting like 12.02 in to the parser! It's nice.
 
+00-09     Errors about the errors
+   01     Exceptions
+   01.11  Project guard condition threw an error.
+   01.12  Area guard condition threw an error.
+   01.13  Category guard condition threw an error.
+   01.14  ID guard condition threw an error.
+
 10-19     Out-of-order errors
    11     Projects
 
@@ -46,3 +53,8 @@ Holy shit this system is self-descriptive. :-)
    24.23  An ID does not belong to its parent category.
    
 30-39     Missing errors
+
+40-49     Invalid input errors
+   41     All
+   // TODO Can you determine not valid number vs. no title etc.
+   41.11  Line is not a valid JD line.

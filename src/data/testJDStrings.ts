@@ -63,6 +63,18 @@ const jderr24_23 = `20-29 area
 02.01 id
 `;
 
+// Test for JDE41.11: Garbage input.
+const jderr41_11_01 = `garbage at the start`;
+const jderr41_11_02 = `10-19 area
+garbage after an area`;
+const jderr41_11_03 = `10-19 area
+11 category
+garbage after a category`;
+const jderr41_11_04 = `10-19 area
+11 category
+11.01 id
+garbage after an id`;
+
 export {
   validTestJDString,
   jderr12_12,
@@ -73,4 +85,8 @@ export {
   jderr14_14,
   jderr23_22,
   jderr24_23,
+  jderr41_11_01,
+  jderr41_11_02,
+  jderr41_11_03,
+  jderr41_11_04,
 };

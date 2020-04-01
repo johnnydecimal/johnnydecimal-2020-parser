@@ -9,6 +9,10 @@ import {
   jderr14_14,
   jderr23_22,
   jderr24_23,
+  jderr41_11_01,
+  jderr41_11_02,
+  jderr41_11_03,
+  jderr41_11_04,
 } from '../../data/testJDStrings';
 
 // TODO See if there's a better way than forcing with the bang these tests
@@ -77,4 +81,24 @@ test('JDERR23.22', () => {
 test('JDERR24.23', () => {
   expect(jdMachineProcessor(jderr24_23).status).toBe('error');
   expect(jdMachineProcessor(jderr24_23).error).toBe('JDE24.23');
+});
+
+test('JDERR41.11.01', () => {
+  expect(jdMachineProcessor(jderr41_11_01).status).toBe('error');
+  expect(jdMachineProcessor(jderr41_11_01).error).toBe('JDE41.11');
+});
+
+test('JDERR41.11.02', () => {
+  expect(jdMachineProcessor(jderr41_11_02).status).toBe('error');
+  expect(jdMachineProcessor(jderr41_11_02).error).toBe('JDE41.11');
+});
+
+test('JDERR41.11.03', () => {
+  expect(jdMachineProcessor(jderr41_11_03).status).toBe('error');
+  expect(jdMachineProcessor(jderr41_11_03).error).toBe('JDE41.11');
+});
+
+test('JDERR41.11.04', () => {
+  expect(jdMachineProcessor(jderr41_11_04).status).toBe('error');
+  expect(jdMachineProcessor(jderr41_11_04).error).toBe('JDE41.11');
 });

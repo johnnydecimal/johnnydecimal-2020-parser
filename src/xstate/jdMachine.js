@@ -45,6 +45,12 @@ const guardArea = (context, event, guardMeta) => {
   }
 };
 
+/**
+ * guardCategory is executed when any 'CATEGORY' transition is sent.
+ * @param {object} context
+ * @param {object} event
+ * @param {object} guardMeta
+ */
 const guardCategory = (context, event, guardMeta) => {
   if (
     isCategoryOrderValid(context.category, event.jdNumber) &&
@@ -66,12 +72,18 @@ const guardCategory = (context, event, guardMeta) => {
         context.error = 'JDE23.22';
         return false;
       default:
-        context.error = 'JDE01.11';
+        context.error = 'JDE01.13';
         return false;
     }
   }
 };
 
+/**
+ * guardID is executed when any 'ID' transition is sent.
+ * @param {object} context
+ * @param {object} event
+ * @param {object} guardMeta
+ */
 const guardID = (context, event, guardMeta) => {
   if (
     isIDInCategory(context.category, event.jdNumber) &&
@@ -87,7 +99,7 @@ const guardID = (context, event, guardMeta) => {
         context.error = 'JDE24.23';
         return false;
       default:
-        context.error = 'JDE01.11';
+        context.error = 'JDE01.14';
         return false;
     }
   }
@@ -222,6 +234,11 @@ const jdMachine = Machine(
 
       error: {
         type: 'final',
+        entry: (context, event) => {
+          if (event.error === 'Nothing matched.') {
+            context.error = 'JDE41.11';
+          }
+        },
       },
     },
   },

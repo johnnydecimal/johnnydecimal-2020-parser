@@ -22,7 +22,7 @@ const TextAreaInput = () => {
         <TextArea
           onChange={formOnChange}
           placeholder="Type your JD here"
-          style={{ fontFamily: 'Menlo', minHeight: 300 }}
+          style={{ fontFamily: 'Menlo', minHeight: 250 }}
           value={formValue}
         />
       </Form>

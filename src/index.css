@@ -11,3 +11,15 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.ui.input.fluid.testclass > input {
+  background: #0a0a0a;
+  border: 2px solid #0e0;
+  color: #0e0;
+  font-family: 'Menlo';
+  padding: 1em;
+}
+
+.ui.input.fluid.testclass > input::selection {
+  background: #0e0;
+}

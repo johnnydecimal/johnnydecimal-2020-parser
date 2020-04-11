@@ -45,6 +45,42 @@
                   // you specify otherwise.
 ```
 
+## What about the meta-data thing?
+
+Just chatting to Volker and it's not going to make sense to have to have all meta-data be forced below the main data. How can you inline it?
+
+```
+000 Project { location: "John's email" }
+- this feels very code-y. Would Gruber pick this? Nope. Horrible.
+
+000 Project    | location: John's email | Owner: John | Other metadata: I mean how long is a note going to be? This could get preposterous.
+
+- this is pipe-separated so it can be formatted like a table
+
+000 Project
+    location: John's email
+    owner: John
+    other metadata: Now this note can be as long as you like.
+    also: You want the keys in the key/value pair to be user-definable.
+    so: it's just lowercase-key-name-colon, thing, newline?
+20-29 Area
+      location: SharePoint
+      owner: John
+      notes: This could work. Notes can be as long as you like as long as there's no eol there; up to you how they wrap in your editor, right?
+      aah:   `If you want a true multi-line thing then you have
+              to specify a multi-line thing somehow. Backticks?`
+      "of course": this is all turned in to a standard JS object at the end of the day.
+
+// What if this was equivalent (and interchangeable in a file):
+
+29 Category | owner: John | "this property": is this value | and: so on
+
+29 Category
+   owner: John
+   "this property": is this value
+   and: so on
+```
+
 ## What's illegal?
 
 ```

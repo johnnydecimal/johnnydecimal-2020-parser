@@ -24,3 +24,4 @@ yarn-error.log*
 
 # Johnny's internal doco
 **/*johnnyignore*
+**/*jig.md

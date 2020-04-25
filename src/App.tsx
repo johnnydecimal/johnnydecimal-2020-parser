@@ -8,6 +8,8 @@ import {
 } from 'react-router-dom';
 import { Container, Header } from 'semantic-ui-react';
 import userbase, { Item, UserResult } from 'userbase-js';
+import { useMachine } from '@xstate/react';
+import { Machine } from 'xstate';
 
 import Account from './account';
 import CommandLine from './commandLine/commandLine';
@@ -17,167 +19,106 @@ import LoggedIn from './LoggedIn';
 
 import 'semantic-ui-css/semantic.min.css';
 
+const loginStateMachine = Machine({
+  id: 'loginState',
+  initial: 'pageLoad',
+  states: {
+    pageLoad: {
+      on: {
+        LOGGED_IN: 'loggedIn',
+        NOT_LOGGED_IN: 'notLoggedIn',
+      },
+    },
+    notLoggedIn: {
+      on: {
+        TRYING_LOGIN: 'tryingLogin',
+      },
+    },
+    tryingLogin: {
+      on: {
+        LOGIN_SUCCESS: 'loggedIn',
+        LOGIN_FAILURE: 'notLoggedIn',
+      },
+    },
+    loggedIn: {
+      on: {
+        LOGGED_OUT: 'notLoggedIn',
+        LOGOUT_FAILURE: 'loggedIn',
+      },
+    },
+    loggedOut: {
+      entry: () => {
+        console.log('👔 Entered the loggedOut state.');
+      },
+    },
+  },
+});
+
 const App: React.FC = () => {
   const [user, setUser] = useState<UserResult>();
+  const [loginState, loginStateSend] = useMachine(loginStateMachine);
+  // debugger;
 
-  console.log(`❎ App: user object follows (out)`);
-  console.log(user);
+  console.log(`loginState: ${loginState.value}`);
+  console.log(`user.username: ${user?.username}`);
 
   useEffect(() => {
     userbase
       .init({ appId: process.env.REACT_APP_USERBASE_APP_ID as string })
       .then((session) => {
-        console.log(`❎ App: user object follows (in)`);
-        console.log(session.user);
-        session.user && setUser(session.user);
-      });
+        if (session.user) {
+          setUser(session.user);
+          loginStateSend('LOGGED_IN');
+        } else {
+          loginStateSend('NOT_LOGGED_IN');
+        }
+      })
+      .catch((e) => console.log(e));
   }, []);
-
-  // const [regForm, setRegForm] = useState<{
-  //   username?: string;
-  //   password?: string;
-  // }>({ username: '', password: '' });
-  // const handleRegInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-  //   setRegForm({ ...regForm, [event.target.name]: event.target.value });
-  // };
-
-  // const handleRegSubmit = (event: FormEvent<HTMLFormElement>) => {
-  //   event.preventDefault();
-  //   if (regForm.username && regForm.password) {
-  //     userbase
-  //       .signUp({
-  //         username: regForm.username,
-  //         password: regForm.password,
-  //         rememberMe: 'local',
-  //       })
-  //       .then((ur: UserResult) => setUser(ur))
-  //       .catch((err) => alert(err));
-  //   }
-  // };
-
-  // const [loginForm, setLoginForm] = useState<{
-  //   username?: string;
-  //   password?: string;
-  // }>({ username: '', password: '' });
-
-  // const handleLoginInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-  //   setLoginForm({ ...loginForm, [event.target.name]: event.target.value });
-  // };
-
-  // const handleLoginSubmit = (event: FormEvent<HTMLFormElement>) => {
-  //   event.preventDefault();
-  //   if (loginForm.username && loginForm.password) {
-  //     userbase
-  //       .signIn({
-  //         username: loginForm.username,
-  //         password: loginForm.password,
-  //         rememberMe: 'local',
-  //       })
-  //       .then((ur: UserResult) => setUser(ur))
-  //       .catch((err) => alert(err));
-  //   }
-  // };
 
   const handleLogout = () => {
     userbase
       .signOut()
-      .then(() => setUser(undefined))
-      .catch((err) => alert(err));
+      .then(() => {
+        loginStateSend('LOGGED_OUT');
+        setUser(undefined);
+      })
+      .catch((err) => {
+        loginStateSend('LOGOUT_FAILURE');
+        alert(err);
+      });
   };
-
-  // // Store data
-  // const DATABASE_NAME = 'blueButton';
-
-  // useEffect(() => {
-  //   if (user) {
-  //     userbase.openDatabase({ databaseName: DATABASE_NAME, changeHandler });
-  //   }
-  // }, [user]);
-
-  // const [numClicks, setNumClicks] = useState<number>();
-
-  // const handleBlueButtonClick = () => {
-  //   userbase.insertItem({ databaseName: DATABASE_NAME, item: new Date() });
-  // };
-
-  // const changeHandler = (items: Item[]) => {
-  //   setNumClicks(items.length);
-  // };
 
   return (
     <div style={{ margin: '50px' }}>
-      {user ? (
-        <LoggedIn handleLogout={handleLogout} user={user} />
+      {(() => {
+        switch (loginState.value) {
+          case 'pageLoad':
+            return <div>Figuring out if you're logged in...</div>;
+          case 'notLoggedIn':
+            return (
+              <RegisterLogin
+                setUser={setUser}
+                loginStateSend={loginStateSend}
+              />
+            );
+          case 'tryingLogin':
+            return <div>tryingLogIn</div>;
+          case 'loggedIn':
+            return <LoggedIn handleLogout={handleLogout} user={user} />;
+          case 'loggedOut':
+            return <div>loggedOut</div>;
+          default:
+            return null;
+        }
+      })()}
+
+      {/* {loginState.value === 'loggedIn' ? (
       ) : (
         <RegisterLogin setUser={setUser} />
-      )}
+      )} */}
     </div>
   );
 };
 
-/*
-const App: React.FC = () => {
-  // Very simple: are we logged in? If not, show some login stuff.
-  // If so, show the app.
-
-  // Aha, thought of a good compromise to get started. There will be a separate
-  // /account page where you log in, log out, etc. ALl done there for now.
-
-  // === Userbase ===
-  const [user, setUser] = useState<UserResult>();
-
-  useEffect(() => {
-    userbase
-      .init({ appId: process.env.REACT_APP_USERBASE_APP_ID as string })
-      .then((session) => {
-        session.user && setUser(session.user);
-        console.log(`❎ App: user object follows within the init`);
-        console.log(user);
-      })
-      .catch((e) => console.error(e));
-  }, []);
-  // If (user) here -- asynchronously -- then we're logged in.
-
-  console.log(`❎ App: user object follows`);
-  console.log(user);
-
-  return (
-    <div>Just watch the console</div>
-    <Router>
-      <div>
-        <nav>
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/account">Account</Link>
-            </li>
-          </ul>
-        </nav>
-      </div>
-
-      <Switch>
-        <Route path="/account">
-          <Account />
-        </Route>
-        <Route path="/">
-          {user ? (
-            // Logged in
-            <Container style={{ marginTop: '50px' }}>
-              <Header as="h1">Johnny.Decimal</Header>
-              <Header as="h2">{user.username}</Header>
-              <TextAreaInput />
-              <CommandLine />
-            </Container>
-          ) : (
-            // Not logged in
-            <Redirect to="/account" />
-          )}
-        </Route>
-      </Switch>
-    </Router>
-  );
-};
-*/
 export default App;

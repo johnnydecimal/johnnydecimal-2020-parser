@@ -2,7 +2,7 @@ import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import userbase, { Item, UserResult } from 'userbase-js';
 
 type Props = {
-  user: UserResult;
+  user: any;
   handleLogout: any; // Function didn't work?
 };
 

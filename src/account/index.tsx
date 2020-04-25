@@ -3,9 +3,10 @@ import userbase, { Item, UserResult } from 'userbase-js';
 
 type Props = {
   setUser: Function;
+  loginStateSend: Function;
 };
 
-const RegisterLogin: React.FC<Props> = ({ setUser }) => {
+const RegisterLogin: React.FC<Props> = ({ setUser, loginStateSend }) => {
   const [regForm, setRegForm] = useState<{
     username?: string;
     password?: string;
@@ -17,6 +18,8 @@ const RegisterLogin: React.FC<Props> = ({ setUser }) => {
   const handleRegSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (regForm.username && regForm.password) {
+      console.log('sending LOGGING_IN');
+      loginStateSend('LOGGING_IN');
       userbase
         .signUp({
           username: regForm.username,
@@ -40,13 +43,17 @@ const RegisterLogin: React.FC<Props> = ({ setUser }) => {
   const handleLoginSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (loginForm.username && loginForm.password) {
+      loginStateSend('TRYING_LOGIN');
       userbase
         .signIn({
           username: loginForm.username,
           password: loginForm.password,
           rememberMe: 'local',
         })
-        .then((ur: UserResult) => setUser(ur))
+        .then((ur: UserResult) => {
+          setUser(ur);
+          loginStateSend('LOGIN_SUCCESS');
+        })
         .catch((err) => alert(err));
     }
   };

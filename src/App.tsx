@@ -28,10 +28,16 @@ const loginStateMachine = Machine({
         LOGGED_IN: 'loggedIn',
         NOT_LOGGED_IN: 'notLoggedIn',
       },
+      entry: () => {
+        console.log('🇺🇸 -- pageLoad.entry');
+      },
     },
     notLoggedIn: {
       on: {
         TRYING_LOGIN: 'tryingLogin',
+      },
+      entry: () => {
+        console.log('🇺🇸 -- notLoggedIn.entry');
       },
     },
     tryingLogin: {
@@ -39,28 +45,57 @@ const loginStateMachine = Machine({
         LOGIN_SUCCESS: 'loggedIn',
         LOGIN_FAILURE: 'notLoggedIn',
       },
+      entry: () => {
+        console.log('🇺🇸 -- tryingLogin.entry');
+      },
     },
     loggedIn: {
       on: {
-        LOGGED_OUT: 'notLoggedIn',
+        LOGGED_OUT: 'loggedOut',
         LOGOUT_FAILURE: 'loggedIn',
+      },
+      entry: () => {
+        console.log('🇺🇸 -- loggedIn.entry');
       },
     },
     loggedOut: {
-      entry: () => {
-        console.log('👔 Entered the loggedOut state.');
-      },
+      // entry: () => {
+      //   console.log('🇺🇸 -- loggedOut.entry');
+      // },
+      entry: ['undefineUser'],
     },
   },
 });
 
 const App: React.FC = () => {
-  const [user, setUser] = useState<UserResult>();
-  const [loginState, loginStateSend] = useMachine(loginStateMachine);
-  // debugger;
+  // console.log('🚨🚨🚨 <App> rendering 🚨🚨🚨');
 
-  console.log(`loginState: ${loginState.value}`);
-  console.log(`user.username: ${user?.username}`);
+  const [user, setUser] = useState<UserResult>();
+  const [loginState, loginStateSend, loginStateService] = useMachine(
+    loginStateMachine,
+    {
+      execute: false,
+      actions: {
+        undefineUser: () => {
+          console.log('🇬🇭 in the undefineUser action, about to setUser(undef)');
+          setUser(undefined);
+        },
+      },
+    }
+  );
+  console.log('App:React.FC -> loginState', loginState);
+
+  // if (loginState.actions.length > 0) {
+  //   loginState.actions.forEach((action) => {
+  //     console.log('App:React.FC -> action', action);
+  //     // Note the TS-override on exec! (ts2722)
+  //     action.exec!(loginState.context, loginState.event, loginState.meta);
+  //   });
+  // }
+  loginStateService.execute(loginState);
+
+  // console.log(`loginState: ${loginState.value}`);
+  // console.log(`user.username: ${user?.username}`);
 
   useEffect(() => {
     userbase
@@ -80,8 +115,10 @@ const App: React.FC = () => {
     userbase
       .signOut()
       .then(() => {
+        console.log('🚢 just about to send LOGGED_OUT');
         loginStateSend('LOGGED_OUT');
-        setUser(undefined);
+        console.log('🚢               sent LOGGED_OUT');
+        // setUser(undefined);
       })
       .catch((err) => {
         loginStateSend('LOGOUT_FAILURE');
@@ -103,7 +140,7 @@ const App: React.FC = () => {
               />
             );
           case 'tryingLogin':
-            return <div>tryingLogIn</div>;
+            return <div>tryingLogin</div>;
           case 'loggedIn':
             return <LoggedIn handleLogout={handleLogout} user={user} />;
           case 'loggedOut':
